@@ -1,0 +1,57 @@
+/* Especificidad máxima para tu pestaña de bodegas */
+#mswc_stores_product_data>div>table>tbody>tr>td>p {
+    padding: 0 !important;
+    /* Elimina el padding de 162px de la izquierda [cite: 735] */
+    margin: 0 !important;
+}
+
+/* Forzar que el input sea realmente 100% de la celda */
+#mswc_stores_product_data .wmh-bodega-table input {
+    width: 100% !important;
+    max-width: 100% !important;
+    /* Evita que WC limite el ancho [cite: 668] */
+    box-sizing: border-box;
+}
+
+mark.mswc_instock {
+    background: transparent;
+    color: forestgreen;
+    font-weight: 600;
+}
+
+.mswc-view-details-link {
+    display: inline-block;
+    margin-top: 5px;
+    color: #2271b1;
+    text-decoration: none;
+    font-size: 0.85em;
+}
+
+.mswc-stock {
+    background: transparent;
+    font-weight: 600;
+    font-style: italic
+}
+
+.mswc_outofstock {
+    background: transparent;
+    color: #ad5f82;
+    font-weight: 600;
+}
+
+.mswc_instock {
+    background: transparent;
+    color: #167953;
+    font-weight: 600;
+}
+
+.mswc-helper {
+    font-size: 0.85em;
+    color: #ad5f82;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.mswc-admin-price-wrapper {
+    font-style: italic;
+}
