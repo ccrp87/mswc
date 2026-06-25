@@ -1,36 +1,31 @@
-/* Especificidad máxima para tu pestaña de bodegas */
-#mswc_stores_product_data>div>table>tbody>tr>td>p {
+/* ============================================================
+   WooCommerce Multi-Store – Admin styles
+   ============================================================ */
+
+/* --- Pestaña de producto: tabla de bodegas --- */
+#mswc_stores_product_data > div > table > tbody > tr > td > p {
     padding: 0 !important;
-    /* Elimina el padding de 162px de la izquierda [cite: 735] */
     margin: 0 !important;
 }
 
-/* Forzar que el input sea realmente 100% de la celda */
-#mswc_stores_product_data .wmh-bodega-table input {
+#mswc_stores_product_data .mswc-stores-table {
+    margin: 20px;
+    width: 95%;
+}
+
+#mswc_stores_product_data .mswc-stock-input input,
+#mswc_stores_product_data .mswc-price-input input {
     width: 100% !important;
     max-width: 100% !important;
-    /* Evita que WC limite el ancho [cite: 668] */
     box-sizing: border-box;
 }
 
-mark.mswc_instock {
+/* --- Columnas en listado de productos --- */
+mark.mswc_instock,
+.mswc_instock {
     background: transparent;
-    color: forestgreen;
+    color: #167953;
     font-weight: 600;
-}
-
-.mswc-view-details-link {
-    display: inline-block;
-    margin-top: 5px;
-    color: #2271b1;
-    text-decoration: none;
-    font-size: 0.85em;
-}
-
-.mswc-stock {
-    background: transparent;
-    font-weight: 600;
-    font-style: italic
 }
 
 .mswc_outofstock {
@@ -39,19 +34,104 @@ mark.mswc_instock {
     font-weight: 600;
 }
 
-.mswc_instock {
-    background: transparent;
-    color: #167953;
+.mswc-stock {
     font-weight: 600;
+    font-style: italic;
 }
 
 .mswc-helper {
     font-size: 0.85em;
     color: #ad5f82;
-    cursor: pointer;
+    cursor: help;
     font-weight: bold;
+    margin-left: 2px;
 }
 
 .mswc-admin-price-wrapper {
     font-style: italic;
+}
+
+.mswc-view-details-link {
+    display: inline-block;
+    margin-top: 4px;
+    color: #2271b1;
+    text-decoration: none;
+    font-size: 0.85em;
+}
+
+.mswc-view-details-link:hover {
+    text-decoration: underline;
+}
+
+/* ============================================================
+   Página de gestión de stores  (admin.php?page=mswc-stores)
+   ============================================================ */
+
+.mswc-stores-wrap .mswc-back-link {
+    display: inline-block;
+    margin: 6px 0 0;
+    color: #2271b1;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+.mswc-stores-wrap .mswc-back-link:hover {
+    text-decoration: underline;
+}
+
+/* Campos de solo lectura */
+.mswc-readonly-field {
+    background: #f0f0f1;
+    cursor: not-allowed;
+    color: #646970;
+}
+
+/* Asterisco de campo requerido */
+.mswc-required {
+    color: #d63638;
+    margin-left: 2px;
+}
+
+/* Botón cancelar en el formulario */
+.mswc-store-form .button-secondary {
+    margin-left: 8px;
+}
+
+/* --- Badges de estado --- */
+.mswc-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 0.8em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.mswc-badge--active {
+    background: #edfaef;
+    color: #1a7a34;
+    border: 1px solid #c3e6cb;
+}
+
+.mswc-badge--inactive {
+    background: #fdf3f3;
+    color: #943131;
+    border: 1px solid #f5c2c7;
+}
+
+.mswc-toggle-link {
+    margin-left: 6px;
+    font-size: 0.85em;
+    text-decoration: none;
+    color: #646970;
+}
+
+.mswc-toggle-link:hover {
+    color: #d63638;
+}
+
+/* --- Confirm delete JS hook --- */
+.mswc-confirm-delete {
+    color: #d63638 !important;
 }

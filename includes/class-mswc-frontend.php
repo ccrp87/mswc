@@ -1,42 +1,91 @@
 <?php
-class mswc_Frontend
-{
+if ( ! defined( 'ABSPATH' ) ) exit;
 
-    public function __construct()
-    {
-        // 1. Cargamos el selector en el header (Hook de WooCommerce)
-        add_action('woocommerce_before_main_content', [$this, 'mswc_render_store_selector'], 5);
+/**
+ * Integra el selector de tienda en el frontend de WooCommerce.
+ *
+ * Renderiza el widget de selección de tienda antes del contenido principal
+ * de WooCommerce y también lo expone como shortcode `[mswc_selector]` para
+ * poder embeberse en cualquier página o widget. Encola la hoja de estilos CSS
+ * del frontend.
+ *
+ * El script `selector.js` y su localización (nonce + ajax_url) son
+ * responsabilidad de `MSWC_Session::enqueue_scripts()` para centralizar
+ * la gestión de variables AJAX en un único lugar.
+ *
+ * Hooks registrados:
+ *  - `woocommerce_before_main_content` → selector antes del contenido principal.
+ *  - `wp_enqueue_scripts`              → encola `style.css`.
+ *  - Shortcode `[mswc_selector]`       → selector embebido en contenido arbitrario.
+ *
+ * @package WooCommerce_Multi_Store
+ * @since   1.0.0
+ */
+class MSWC_Frontend {
 
-        // 2. Cargamos los estilos y scripts necesarios para el frontend
-        add_action('wp_enqueue_scripts', [$this, 'mswc_enqueue_frontend_assets']);
-
-        // 3. Shortcode para el selector (opcional, si quieres usarlo en otras partes)
-        add_shortcode('mswc_selector', [$this, 'mswc_render_store_selector']);
-
+    /**
+     * Registra todos los hooks de WordPress y el shortcode.
+     *
+     * @since 1.0.0
+     */
+    public function __construct() {
+        add_action( 'woocommerce_before_main_content', [ $this, 'mswc_render_store_selector' ], 5 );
+        add_action( 'wp_enqueue_scripts',              [ $this, 'mswc_enqueue_frontend_assets' ] );
+        add_shortcode( 'mswc_selector',                [ $this, 'mswc_render_store_selector' ] );
     }
 
-    public function mswc_render_store_selector()
-    {
-        $stores = MSWC_Plugin::get_active_stores();
-        $current_store = WC()->session->get( 'mswc_mswc_selected_store' );
+    /**
+     * Renderiza el selector de tienda con la lista de tiendas habilitadas.
+     *
+     * Muestra un `<select>` con todas las tiendas activas y un botón de
+     * confirmación. Si ya hay una tienda guardada en la sesión del cliente,
+     * su opción aparece preseleccionada. Se usa tanto como acción directa
+     * (`woocommerce_before_main_content`) como retorno del shortcode
+     * `[mswc_selector]`, por lo que el HTML se emite directamente con `echo`
+     * en el caso de acción y se devuelve como cadena en el caso del shortcode
+     * (WordPress captura el output del shortcode automáticamente cuando el
+     * callback usa `echo` dentro de un buffer abierto por el sistema de
+     * shortcodes).
+     *
+     * @since 1.0.0
+     */
+    public function mswc_render_store_selector(): void {
+        $stores        = MSWC_Plugin::get_active_stores();
+        $current_store = WC()->session ? WC()->session->get( 'mswc_selected_store' ) : '';
         ?>
-        <select id="mswc-select-store" style="margin-bottom:20px; display:block; width:100%;">
-            <option value="">Seleccionar...</option>
-            <?php foreach ( $stores as $store ) : ?>
-                <?php $selected = ($current_store == $store['id']) ? 'selected' : '';?>
-                <option value="<?php echo esc_attr( $store['id'] ); ?>" <?php echo $selected; ?>>
-                    <?php echo esc_html( $store['name'] ); ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-        <button id="mswc-save-store" class="button alt"><?php _e( 'Seleccionar Store', 'wmh' ); ?></button>
+        <div class="mswc-store-selector">
+            <select class="mswc-store-select">
+                <option value=""><?php esc_html_e( 'Seleccionar...', 'woocommerce-multi-store' ); ?></option>
+                <?php foreach ( $stores as $store ) : ?>
+                    <option value="<?php echo esc_attr( $store['id'] ); ?>"
+                        <?php selected( $current_store, $store['id'] ); ?>>
+                        <?php echo esc_html( $store['name'] ); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            <button class="mswc-save-store button alt">
+                <?php esc_html_e( 'Seleccionar Store', 'woocommerce-multi-store' ); ?>
+            </button>
+        </div>
         <?php
     }
 
-    public function mswc_enqueue_frontend_assets()
-    {
-        wp_enqueue_style('mswc-frontend-css', plugin_dir_url(__FILE__) . '../assets/css/frontend.css');
-        wp_enqueue_script( 'mswc-selector', plugin_dir_url( __DIR__ ) . 'assets/js/selector.js', array('jquery'), '1.0', true );
-
+    /**
+     * Encola la hoja de estilos CSS del frontend (`style.css`).
+     *
+     * Solo encola el CSS. El script `selector.js` y las variables AJAX
+     * (`ajax_url`, `nonce`) son gestionados por `MSWC_Session::enqueue_scripts()`
+     * para evitar duplicar la localización de variables en dos lugares distintos.
+     *
+     * @since 1.0.0
+     */
+    public function mswc_enqueue_frontend_assets(): void {
+        wp_enqueue_style(
+            'mswc-frontend-css',
+            MSWC_PLUGIN_URL . 'assets/css/style.css',
+            [],
+            MSWC_VERSION
+        );
+        // El script selector.js y su localización (nonce + ajax_url) los encola MSWC_Session.
     }
 }
